@@ -1,0 +1,93 @@
+M2 Working with Linux Command Line Basics
+[New clip1: course/module intro]
+
+Graphic interfaces look pretty and all that, but I'm going to go out on a limb and declare that both the past and future of serious system administration are heavily skewed towards the command line. The past is easy to explain: there just weren't useful GUI interfaces to work with thirty years ago in an age of limited video memory and low resolution displays. But the future? Why would people willingly subject themselves to a text-based, memorization-heavy life without visual prompts when there are so many smart user interfaces available? I have two answers for you: efficiency and infrastructure automation.
+
+What's the efficiency calculus? Clicking through layers and layers of GUI admin configuration pages to get things done can get really stale, really fast. The functionality may be there, but the time it takes to move through the system becomes pure punishment whenever you're faced with repetitive tasks. Well-designed and mature GUI interfaces like Windows Server or this Amazon Web Services Web Console have pages where you can get just about anything done, but they also both make it very clear that serious work should take place via the command line. In the case of Windows, that'll happen through PowerShell, and it'll be the AWS CLI for Amazon.
+
+Linux perfected the art of command line administration decades ago and, in fact, is the model on which subsequent CLIs are based. And since Linux is the dominant server platform across all industry sectors, you're going to want to get a piece of all that efficiency.
+
+And infrastructure automation? Virtualization and cloud computing offer fantastic opportunities for deploying robust, multi-tiered server workloads, but they all depend on automation. There's no competition: effectively automating your infrastructure will happen best through scripting - often run through remote login sessions. And remote scripting loves command lines.
+
+This course is designed to introduce you to some of the most basic critical tools of the Linux terminal. In this module, you'll learn how using a text-based administration interface doesn't mean you have to have command syntax memorized: there are all kinds of tools to help you within the terminal environment. You'll see how the command line environment is configured and controlled, and also be introduced to some key syntax conventions and shortcuts - all of which will make your integration into the terminal world smooth and fun.
+
+Through the rest of this course you'll learn to understand how Linux resources are distributed through the file system - which will help you figure out the best ways to access and configure them. I'll introduce you to Linux networking so you'll be able to establish, control, and troubleshoot your network connectivity. And we'll close out the course with a full module covering the basics of Bash scripting.
+
+Most of the content will be entry-level, but does assume some baseline familiarity with installing and running a Linux system. If you feel you could use some more background, take a look at my Getting Started with Linux course.
+
+Keep in mind that command line examples and any important updates will always be available on the course page on my own website at bootstrap-it.com/linux-cli.
+
+[New clip2: Linux Help Resources]
+
+Consider the fact that there are hundreds of core commands and literally tens of thousands of other programs that can be installed and run on a Linux system. And then reflect that each command can be controlled by dozens or even hundreds of command line arguments. It really shouldn't come as a surprise to anyone that trying to keep all the permutations and combinations stored somewhere in your busy head isn't too likely to work out well. A more realistic approach will probably involve relying on documentation whenever you're stuck.
+
+One terrific source of help is the Internet and the countless thousands of pages of documentation and user support questions and answers you can find there. You should never underestimate the power of an Internet search engine at finding answers to your problems. But Linux also has its own built-in support systems, and you need to be comfortable using them.
+
+Most programs come with their own manual files as part of the man system. Typing the word man followed by the name of a command - wget in this example - will display a well organized reference listing that command's syntax, usage pattern and command line arguments. wget, by the way, is a simple program that you run with the address of a web page or file you'd like to download to your current directory. You might, for instance, want to download the latest version of the WordPress content management system for your new company blog.
+
+Some minimal editions of Linux come without the man pages pre-installed. You can fix that by simply downloading the man-db package using either apt on Ubuntu systems or yum on CentOS.
+
+Another fabulous tool - that probably won't be installed on every system by default - is info. Before installing the package here on Ubuntu, run apt update to make sure that apt knows about the latest versions of the  packages that are available from the repository. Then apt install info will get you the rest of the way.
+
+In case you're wondering, I prefixed apt with the word sudo because - on most Linux systems - sudo allows privileged users to run single programs with full admin powers, without the need to run entire shell sessions as root - something that over the long term carries significant security risks. 
+
+Great. Now, if I run info without any arguments, it will offer me a menu of major topics, including a list of installed programs. I'll hit the forward slash and search for our wget command. I can then use the up and down keys to move to a menu line that I'd like to explore further, and hit enter. On the new wget menu page, I'll move to Examples and hit enter again...and again on Simple Usage. When I'm done, I hit q to exit info. 
+
+By the way, I can get to the same page directly from the command line using info wget examples simple.
+
+Many programs keep documentation and sample configuration files in the /usr/share/doc directory tree. Keeping with our "all wget, all the time" obsession, we'll change directories to /usr/share/doc/wget and then use ls to list the directory's contents. We can see a copyright file, and also a README, which contains a review of the software itself and a standard GPL copyright notice.
+
+One more useful resource format is the quick and dirty simplified usage guides that many commands will show you when you add --help. They may be simplified, but there can be a lot of them, so I'll pipe this output to the "less" text reader that'll let us read it at our own speed.
+
+The "type" command can tell you how a specified word would be interpreted by BASH. Running type on wget, for instance, tells us that it's a binary command that actually exists in the /usr/bin directory.
+
+[New clip3: The Linux Terminal]
+
+It's time for a serious talk about the Linux terminal. And, while we're on the subject, the Linux shell - which is not quite the same thing. Whenever you open a terminal *window* from a Linux desktop, a new shell *session* is created for you using the default settings in a special hidden file in your home directory called .bashrc. Since every new shell session automatically locates us within our home directory, I'll list all the files in the directory using ls -a. The dot at the beginning of the filename indicates that it's hidden - meaning, it won't be displayed when you run a plain old ls command without the "a" argument. I can show you what my bashrc file looks like using the less command - which prints a specified file one screen at a time. 
+
+As you may be able to tell from just looking, bashrc controls things like the way "less" itself works, what information will be included in the command line prompt, the way colors display - if at all - and what aliases will be available to you from the command line.
+
+If you wanted to change any shell values, this is one of the files you might edit. This file will only be read and applied to non-login shell sessions like this one. We call it non-login because, since we're already logged into our GUI desktop, there's no need to log in a second time.
+
+If, however, I were to access my account from a remote computer - by way of, say, an SSH Secure Shell session - I would need to log in with my account name and password. The shell that would be created for me - which, as you can probably predict, would be called a login shell - would get its values from one of a number of different files, including .profile. If you read through the profile file, you'll notice that, if a bashrc file exists, then its settings will also be used for the shell environment. There's also a profile file lurking in the /etc/ directory where system-wide shell settings are configured.
+
+Even though we're going to work with the Bash shell for this course, you should be aware that there are other shells, like dash and ksh. The functional differences between them are generally only relevant to very specific use-cases so, they should all work the same for most general administration operations. All shells will, for instance, interpret commands and object names as case sensitive. Most commands will use lower case. Since the Linux command line is case sensitive, trying to read my .profile file using less with a capital L won't work:
+	Less .profile
+If you're curious about the default shell currently set for a particular user, you can consult the passwd file in /etc/. There's a single line for each system and regular user. As you can see, the ubuntu user has been assigned 1000 as both the user and group ID, uses the /home/ubuntu directory as its home, and uses Bash as its default shell. 
+
+[New clip4: Linux Command Syntax Patterns and Shortcuts]
+
+Let's look at some common usage patterns shared by many Linux commands. Having a good feel for these basics can make learning your way around much faster. Invoking a command always starts with the command name. In some cases, as with this ls command, just the name on its own is enough to return a result. However, you'll usually need to add some combination of arguments and parameters to get the most out of a tool. 
+
+You've already seen how adding -a to the ls command will display all the files in a directory, even hidden files. But you can get the same results using two dashes and the word all. Providing these alternatives make command arguments more accessible for all kinds of people: those who remember things better through more complete descriptions and those who perform a task often enough that they can enjoy the speed of a single letter argument. A quick look through the man file for ls will show you that many other short arguments also have two-dash, longer equivalents.
+
+There are exceptions to that argument syntax usage. The networking administration ip command, for instance, can use the addr argument without a dash to show the IP addresses associated with your system's network interfaces. On all the systems I've used over the past couple of years, this can even be shortened to a simple "a" - also without a dash.
+
+You can combine multiple short arguments in a single command. ls -l will list the contents of a directory in long form - displaying object permissions, ownership, size, and age details. Running that again with the h argument will give us the file size in human readable format. And adding t will organize the objects in descending chronological order.
+
+Besides arguments, most commands can also read properly-formatted parameters. This example will list the full contents of the /etc directory from wherever you happen to be in the filesystem.
+
+As all the best system administrators are profoundly lazy, you can expect that there are going to be some pretty serious command line shortcuts hiding in plain sight. And there are. The most powerful of them is probably autocomplete. Bash watches what you're typing and can often anticipate what it is you're after. See the compressed tar archive file in this directory? I'm going to start typing the tar command for extracting the contents, but I'll stop at the letter n. Rather than having to enter the entire file name, I'll just hit the Tab key, and Bash will do the rest for me. Bash understands the context of the command, so it gives me the archive, and not the sub directory that's using a similar name. If I were to run the change directory command - cd - with the letter n, however, hitting tab would correctly give me the directory name. Naturally, autocomplete will only work like this when there's only one matching possibility in that directory. You might sometimes need to provide a few more characters to get a good match.
+
+Speaking of cd and shortcuts, you can type simply cd from anywhere in the file system and you'll be taken right back to your user's home directory. 
+
+You can cycle through recent commands by hitting the up arrow key. With an old command displayed, you only need to hit enter to run it again. Of course, you may have moved to a different location in the meantime, so the command context might have changed. The 1,000 most recent commands are stored in a hidden file in your user's home directory called .bash_history, and can be seen by running the "history" command.
+
+One more thing. There are some characters - known as regular expressions - that the shell won't necessarily interpret the way you might expect. One example is a simple space, other examples include the dot, square brackets, the asterisk, and the question mark. Bash will often interpret those as command instructions rather than simple characters. Suppose you decide to create a file with the name "this is my story." Running touch and an unused file name is one quick way to create an empty file. But if you run touch like this, things won't work out the way you probably expect.
+
+Listing the files in the directory will show you that there are now four files, each with a single word name. What happened? Touch figured you wanted to create four separate files and got right to work doing it. Let's get rid of that mess.
+
+Now let's do it again the right way. We'll enclose the whole filename - spaces included - within quotation marks. This tells Linux that it's all one string.
+
+Another way to force Bash to preserve the literal value of your input is to use the back slash as an escape character. The way that would work for our problem would be to type the back slash before each space in the string. As you can see when we list the contents of the directory, we now have a single file with the name "another four word name".
+
+The truth is, that you might be better off in the long run getting into the habit of creating single word filenames by using dashes or underscores. It can simplify your file management. 
+
+That's it for this module, but we should probably take a moment to review what we've seen here. We learned about Linux' primary inline documentation system, man, and how to use it to quickly find operational information for just about any Linux command. We saw that the info system, the contents of the /usr/share/doc directories, and even running a command followed by --help can also provide valuable information and resources.
+
+We saw how the behavior of both login and non-login command line shell sessions is controlled by files like .bashrc and .profile.
+
+We discovered how arguments and parameters are passed to Bash commands - in the case of arguments, both in their short and long formats. And we learned to take advantage of some helpful shortcuts, including accessing command history through the up and down arrow keys, and contextual autocomplete suggestions using Tab. Finally, we now understand how some characters - like spaces - are treated differently by Bash, sometimes requiring escape characters to get the right results.
+
+The next module will focus on getting you completely comfortable finding your way around the Linux file system. That's not something you'll want to miss.
+

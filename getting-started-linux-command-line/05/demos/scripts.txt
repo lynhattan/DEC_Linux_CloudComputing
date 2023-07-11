@@ -1,0 +1,57 @@
+M5 Scripting
+
+[new clip1: A Simple Calculator Script]
+On Linux, scripts live somewhere between programming code and command line execution. Bash scripts are command line-friendly places because you can use just about any of the terminal commands with which you're already familiar - and in exactly the same ways. But they also have some of the added functionality you would normally associate with programs, like user inputs, dynamic variables, and loops. This module won't make you a rock star script master, but it will give you some key basics. I'll show you how to prompt for and process user inputs and variables and apply control tools like loops, if and while controls, and the case structure. We'll also talk a bit about builtins vs external programs.
+
+I'll begin with something really simple just to show you the process. We start with a brand new empty text file inside the nano text editor.
+
+I gave my file the .sh extension to identify it as a script. This is a useful convention for helping you keep track of your script files, but it's not actually necessary. The first line of every script has to tell Linux that it's an executable script and which shell interpreter we're going to use. I do that by typing what's called the shebang line, which consists of a hash symbol, an exclamation mark, and the absolute location of the shell interpreter's binary file. In our case, that will be bash.
+
+After that, there's a world of choices available to you: there's really no limit to what you can make a Linux script do. We'll create a very simple calculator that will ask the user to input two numbers and then output their product. 
+
+Let's look through this one line at a time. We'll first declare three variables as integers, which is to say we will tell the interpreter that it can expect to encounter numeric values associated with objects called number1, number2, and total. We need to tell Linux that these are integers, otherwise it will assume they're just text strings and will be unable to deal with them using arithmetic. Next, using the echo command, the program will print the following text to the screen and wait for the user to enter some value. The read line will read whatever the user entered and assign it to the variable number1. We'll do the same thing a second time and assign this new value to the variable number2. 
+
+Then we will multiply number1 with number2 - this time identifying the pre-existing variables using the dollar sign, just as we did previously on the command line. total= will assign the product of number1 and number2 to the variable total. Next, we'll use echo once again to print some more text and then the variable total. Finally, we'll formally exit the script - a step that isn't always necessary - and tell the script to issue the exit code, 0 - indicating success.
+
+I'll save the file and then list the directory contents to make sure it's where we expect it to be.
+
+But we're not quite ready to run it, we will first have to use the change mode command to make the file executable by adding the value x. 
+
+Now we're ready to run the program by prefacing the script name with a dot and a forward slash. I'll enter my own best and worst numbers - but don't tell anyone else, they're deeply personal secrets - and we're shown their product. Behold. A single function calculator. 
+
+As always, to make sure you've understood what happened here, I would strongly advise you to try this for yourself. Just don't do it exactly they way I did: try new parameters. Perhaps you could try addition or division rather than multiplication. the other arithmetic operations work just the way you'd expect they would. Here, I'll substitute a plus sign for multiplication, save the file, and run the script once again.
+
+Or, if you're feeling adventurous, offer a choice of all four basic math functions. Either way, expect to make mistakes and have your scripts fail. Pay close attention to the error messages you see, feel free to copy your code or error messages and paste them into your favorite internet search engine to find help. And most of all, enjoy the process: it's not frustrating, it's learning.
+
+[new clip2: Working with Loops and Flow Controls]
+
+Now, it's loop time. A loop will apply one or more operations to each one of a set of values, one after the other in sequence. Here's a short script with a loop that uses an internal step feature to count up by a defined increment:
+
+"for" will take the value of the variable i through a loop, starting at 0 and counting up to 10 in increments of 2. At each step of the loop, we will echo "We've been through this i times", printing the current value of i. I'll save the file and set it as executable. Then I'll run it.
+
+A more practical application of a loop might involve adding text to each one of a directory full of files. I'll quickly create a few files to play with. Let's pretend that the files all contain important data, but that they all need to be updated to reflect some recent change. I could open each one separately using nano and add the new text manually, but that can involve unnecessary work - especially if there are a lot of files involved. So instead, I'll create a new script that will read each of the files - one at a time - into the variable I've called filename, echo the important new data within quotation marks, and then append the data into the file whose name matches the current value of $filename. Note that we don't need to declare our filename variable because it's not being used as a number, but instead as a plain character string. I'll cat file3 just to prove that this worked.
+
+You can control a script process using if. This script will ask for two user inputs: your favorite color and your best friend's favorite color. We'll use the test tool to check whether the value of text1 does *not* equal the value of text2. The exclamation mark and equal sign means "does not equal". "If" reads the result of test, so that if the test result is correct - meaning the two values are not equal - then "if" will return a positive result and echo "I guess opposites attract". In all other cases (meaning, if the two values are equal), the else option will be executed, and "you two think alike" will be echoed. You close an if with the word "fi" - "if" backwards. Once again, I'll make the script executable. I'll run it once, using the same color to answer both questions, and then once again entering different colors - just to make sure everything's working properly. Remember: you're not done writing code until you've thoroughly tested it.
+
+While will continue executing a command for as long as a specified statement is true. In this example, we create a variable called counter and assign it the value of 10. Then we will reduce the value of counter by one for each time through the while loop, echoing the current value. Once the statement within brackets is no longer true, it will no longer satisfy our while control, and the script will stop. But what about that statement within brackets? That tests that the value of counter is greater than 2. As long as the counter is three or higher, the message will be echoed. Let's try it out.
+
+If you need a script that offers more than a simple yes or no choice, you might want to use "case". This example reads user input and compares it to a total of six pre-selected choices. If the user enters either sunny or warm, the script will echo the "Nice" string. Cloudy or cool will get the "not bad" string, and either rainy or cold will get "yuk". I've added one more important feature: if the user input doesn't match any of the choices, the asterisk will catch it, and throw back the equivalent of an error message. You need to pay careful attention to syntax, including all the semi colons, parentheses and, of course, the esac - case in reverse - at the end. 
+
+Let's try it out. That's what we would expect. Now let's try it again with some nonsense text...and we get the correct error response. It works.
+
+Before we close out our scripting discussion, I should tell you about the difference between builtins and external commands. A builtin is a program that's "built in" to the Bash scripting environment. Calling a builtin from within your script will often use up less system overhead and create fewer subprocesses. Sometimes, however, the problem you're addressing can be better solved through an external program, so you might choose to reach outside the native Bash environment. There are plenty of lists and guides to using builtins around the internet, but running man builtins from the command line will probably get you all the details you'll need. 
+	man builtins
+
+[new clip3: review]
+
+In this module we learned how to properly format script files and that script files need to be made executable before they can be run. You saw how you can accept inputs to allow user interactivity and then work with the variables populated by the inputs. I introduced you to for loops that apply operations sequentially against a list of values. You can control the way a script uses a variable through if/else and while constructs. Finally, you worked through a case structure that accepted multiple possible inputs and tested for errors.
+
+In the next module...whoops! My mistake. This is actually the last module of the course. So we'll just take a quick look at what we covered and then say our sad goodbyes.
+
+I introduced you to the many useful help documentation resources Linux offers, including the man system and info. You saw how the environment settings applied to login and non-login sessions are determined by various configuration files, including bashrc and profile. You learned about command line syntax patterns like the way command arguments are passed to an program, and how to make sure that Bash understands what you want it to do with special characters.
+
+You picked up some basic file and directory administration skills, including how to save yourself time and keystrokes using file globbing, how to search for files and within files for important data, how you can redirect data streams, and how to create and restore from data archives. I showed you how to use Linux kernel modules to manage hardware peripherals.
+
+In our Linux networking discussion, we touched on IPv4 and IPv6 addressing, address assignment conventions, network configuration analysis, how DNS handles the translation between numeric and human-readable network domain names, and how to use the SSH secure shell protocol to open secure and reliable session on remote servers. And in this, final, module, you explored the structure of the Bash script and saw some reasonably practical example scripts. 
+
+I hope you were working along with me through all these demos and that you're now much more comfortable administrating things from the Linux command line. Even more, I hope your new confidence and knowledge will push you to deepen and broaden your Linux administration skills. Don't forget to visit the course page on my own website at bootstrap-it.com/linux-cli. I hope we'll run into each other somewhere or other, but until then, take care of yourselves.

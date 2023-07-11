@@ -1,0 +1,75 @@
+M4 Linux Network Connectivity
+
+[new clip: Network Configuration]
+
+Whether your device will get to the network through an ethernet, WiFi, or 5G connection, it'll have to connect - and remain connected reliably. This module will introduce you to some Linux tools dedicated to analyzing and troubleshooting network connections and making sure that you've got domain name system functionality properly set up so you can get around the internet without having to memorize all kinds of numeric IP addresses. I'll also get you started with the SSH - secure shell - protocol that you'll use to securely connect to and exchange data with remote machines. Linux networking is a very broad topic, but this short introduction will be a great - and practical - start.
+
+The days of single, standalone computers working without any network connectivity are long gone. There is usually very little of value that you're going to be able to accomplish without full access to both the internet and the many other devices in use in your home or office. So building an effective Linux system is going to require some networking skills.
+
+To be properly connected to a network, a device must be identifiable by a unique IP address. How routers decide on a particular addressing scheme is a subject that goes way beyond the scope of this course, but I will say that a local router might itself use an address like 192.168.0.1 and assign addresses like 192.168.0.2 and 192.168.0.3 to the client devices it serves. Perhaps you don't care about the precise address of your own computer right now, but if things ever go wrong and you lose connectivity, you'll want to have a general idea of how it should look. So why not open up a terminal and try it out on your own?
+
+The first step is to see if you've got access to a network router of one sort or another. Run ip route show
+
+In my case, the first line tells me that my default route to the network goes through the 10.0.4.0 address by way of the local network device known as eth0. The part of the second line that interests us right now is at the very end: the IP address listed as "source" is actually my machine's own IP address.
+
+If you have no default gateway or no src address, then you know something's wrong with either your connection or network configuration. Besides actually checking the cable connections between your computer and any switches or routers you have, you can also run dhclient to see if there's a DHCP server on the network that can issue you with an IP address. DHCP, by the way, stands for Dynamic Host Configuration Protocol. Since I already have a working connection, this won't do anything.
+
+If you just want to see your own IP address, you can run ip addr. This tells me that I have two network connections, the first is simply a virtual loopback interface that allows connectivity to local resources. Local interfaces will normally get a 127.0.0.1 address. The second address is, as we saw earlier, using my eth0 interface and has an address in the 10.0.x.x range - matching the network my router is on. IP addresses with four octets separated by dots are using the IPv4 protocol. However, we can also see my much longer IPv6 address that will be useful on IPv6 networks. As the numbers of devices connected directly to the internet continues to climb, IPv6-enabled networking will become more and more common.
+
+What's the difference between IPv4 and IPv6 I hear you asking? The main difference is that IPv6 addresses are drawn from a theoretical pool of numbers that's exponentially larger than IPv4. The reason is simple. IPv4 addresses are made up of four 8-bit numbers, which allows for a mere four billion combinations. That may seem large, but consider that the number of devices connected to the Internet has already grown far beyond four billion, and its rate of growth is ramping up fast. We bought ourselves some breathing space by restricting the use of three address ranges - in the 192.168, 10.0, and 172.16 ranges - for private networks, meaning devices behind a network router could share a single public IP address, but even that's not going to be enough.
+
+IPv6 address, on the other hand, are 128-bit numbers made up of eight groups of four hexadecimal numbers. Which translates to somewhere in the neighborhood of a very great number of possible addresses. give or take a few trillion.
+
+By the way, the ip commands we've already seen are the current state-of-the-art in the Linux world these days. But you'll probably still encounter a couple of older commands that'll do pretty much the same thing: route will display similar output as ip route show, and ifconfig will give you more or less what you get from ip addr. Although, if you ask me, I'd say that the ifconfig output is a whole lot easier to read. 
+
+For more detailed data on your network connections and configuration, you can use the netstat program. Netstat -i, for instance, will display all your network interfaces along with usage statistics. If you're not sure whether your interface is properly connected, you can keep an eye on these numbers. Remember that, on a healthy connected system, network transfer numbers should regularly increase. 
+
+netstat -l will display all the open and listening ports. This can be an easy way to check that there aren't any unnecessary and insecure entry points into your system. Are you sure, for instance, that the HTTP port 80 is supposed to be open for web browsing? 
+
+Like netstat, the ss program can tell you all kinds of good and bad news about your network interfaces. ss can return results a lot faster than netstat but, for us at least, it doesn't display well at this resolution.
+
+
+[new clip: Domain Name System (DNS) Configuration]
+
+As I mentioned, every connected device must be identified by its own unique IP address. And if the only things using networks were computers, then that would be just fine. The problem - as it usually is - is that people insist on getting involved, too, and people don't find it all that easy to remember long IP addresses - especially those of the IPv6 variety. So the DNS - Domain Name System - was created to map numeric IP addresses like 52.33.197.135 to human-readable names like pluralsight.com. 
+
+For that to work, there have to be databases accessible to every network that contain an up-to-date index of names. The services that maintain these databases are called DNS servers. You can easily tell whether your computer has access to a DNS server by pointing a web browser to the DNS name of a web site like, say, my own bootstrap-it.com. If you can successfully load the page, it means that your browser received the correct translation of the name you typed in to its actual public IP address.
+
+You can also reveal the status of your DNS server using the host command - although its main function is translating DNS to IP and IP to DNS. I'll run host against my bootstrap-ip and I'll be shown it's public IP address - which proves that my DNS server is doing its job.
+
+If you can't access DNS names you can try pinging a known network IP address. Ping is a simple command that repeatedly sends short messages to a network address with the request that the message be echoed back, letting us know that that address is live. I'm going to ping 8.8.8.8 - which is actually one of Google's DNS servers. The reason I like using this particular address is because it's so incredibly easy to remember.
+
+If pinging an IP address works, but pinging the associated DNS address does not, it means that something's wrong with your DNS server. On some distributions you manage your DNS settings from the /etc/resolv.conf file. But as you can see from the current contents of the resolv.conf file on this Ubuntu machine, here, everything's handled by systemd-resolve. Running systemd-resolve --status can show you how things are currently configured for you. The key data here is the "DNS servers" line which correctly lists my router's IP address as the primary source for DNS information.
+
+However, you can also manually create your own DNS indexes that will work alongside any network DNS servers you use. Let's look at the hosts file that lives in the /etc/ directory. In this case, you can see that the 127.0.0.1 IP is mapped to the DNS name localhost, and 127.0.1.1 maps to name of this computer. These are pretty standard default settings, but you can always add your own. This entry will direct any local browser requests for mysite.com to the machine with the 192.168.1.5 IP address. Even if there's a real mysite.com out there on the internet, users of this computer will never know about it.
+
+[new clip: Remote Connections and SSH]
+
+The OpenSSH package - which operates using the Secure Shell protocol - was designed to solve two big problems: how system administrators can access remote and virtual servers so they can get their work done, and how the data that flows back and forth across open networks as a result of that access can be secured against unauthorized snooping. 
+
+Why not just walk over to the machine you want to work with and sign in? There are some pretty good reasons why, more likely than not, that's not going to work: for one thing, servers tend not to have displays or even keyboards attached - they're often mounted with many others on racks. And virtual machines - which make up an overwhelming majority of running servers these days, won't even have the physical ports into which a keyboard or display could be attached. Finally, many server workloads are running offsite, miles or even continents away from both you and your keyboard. 
+
+How does OpenSSH secure your connections? Through session encryption. All the data packets sent between the two computers will be scrambled and, for all intents and purposes, unreadable for anyone who might intercept them on their journeys. Without a unique decryption key, the data is useless. OpenSSH invisibly handles the encryption/decryption process, leaving you to go about your work.
+
+SSH is such a popular and reliable protocol, that even Microsoft has made it available natively for Windows 10 and later systems. Naturally, SSH has been a staple of Linux - and its Unix-like cousin, macOS - for decades.
+
+Practically, to get an SSH connection going, you'll need software installed and running on both the client and server machines. The server is the machine that will host the session - the one whose resources you plan to be administrating. The client is your machine - your laptop or workstation.
+
+The server will need the openssh-server package installed, while the client will need openssh-client (or openssh-clients, as it's known on CentOS). The server package will automatically cover you as a client as well but, for security considerations, if you don't need to host incoming SSH sessions, you shouldn't install the server software.
+
+Both the server and client iterations are controlled by configuration files in the /etc/ssh directory. sshd_config is the one you'll edit to manage your system's host behavior, and ssh_config handles the way your system will log in as a client on remote hosts. Taking a look at the server config file, you can see that, by default, SSH sessions use port 22. Most of the time that default value will be fine. But if you want users to be able to log in using their passwords, you'll need to make sure that the PasswordAuthentication line has a value of yes. Secure passwordless sessions are possible through the ssh-keygen and ssh-copy-id tools - and in fact, from a security perspective, they're preferred - but that's something we'll have to leave for another time. If you just can't wait, feel free to watch the SSH module from my own "Protocol Deep Dive: SSH and Telnet" course here on Pluralsight.
+
+Ok. With all that behind us, actually seeing SSH in action might be a bit of an anticlimax. From a terminal session on your client, type ssh, the name of the user account you want to use on the server, the "at" character, and the server's remote address - either an IP address or an actual domain name. I'll enter my password and I'm in. When you're done playing around, you end the session by typing "exit" and you'll find yourself back on your client machine. That's all there is to it.
+
+Well, sort of. Some SSH hosts are configured to use a non-standard network port, so you may need to specify the port using -p. Oh, and you may also sometimes need to use a non-default keypair. This will happen, for instance, if you run Linux instances on Amazon's EC2 platform. You can point to the file location on your local client machine using -i.
+
+There's one more really great SSH trick that I've got to tell you about before we wrap this module up: SCP. SCP stands for "Secure Copy" and it rides on top of your existing SSH infrastructure to securely copy files between machines. Here's how it goes: you start with scp and then the name of the local file you want to send. Then, just the way you did to launch a regular SSH session, you enter a username and the IP address of the remote host. But here's the important thing: you'll need to specify a location on the remote file system to which you'd like your file saved. Right after the IP address, you'll type a colon, a forward slash, and the absolute remote address. Keep in mind that you won't be able to save the file to a location where your user doesn't have sufficient permissions. The home directory - the way I'm doing it here - is safest.
+
+What did we cover in this module? Well, we saw how to identify your machine's route to the network and its public IP address, along with other network interface information. We briefly touched on the differences between the IPv4 and IPv6 IP addressing systems, and then took a quick look at probing your network configurations using the netstat and ss network analysis tools.
+
+We learned about the importance of a proper DNS configuration - how DNS translates human-readable domain requests into machine-friendly IP addresses - and got to see some of the resources used across various Linux distributions for controlling your DNS settings.
+
+We closed out the module with a look at the OpenSSH tool, using it to open a secure login connection on a remote server and to securely transfer a file between machines. With that out of the way, we're ready to move on to the final module in the course, where I'll show you how to make your life much easier by writing and running Bash scripts. See you on the other side.
+
+
+

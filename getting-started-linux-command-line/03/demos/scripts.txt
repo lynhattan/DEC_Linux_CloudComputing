@@ -1,0 +1,110 @@
+M3 Navigating the Linux File System
+
+[new clip1: Working with Files and Directories]
+
+If you're going to get stuff done on Linux - especially using the command line - you'll need a solid sense of where files are kept and how to work with them. The good news is that figuring all that out isn't as hard as it might seem. If you need a refresher on the way the Linux file system is organized, check out my Getting Started with Linux course. 
+
+In this module of this course, we're going to learn some basic file and directory administration survival skills; explore some powerful tools you can use to search for both files and text strings contained within those files, and then manipulate the data you find; learn how to create and use compressed data archives; and then identify hardware peripherals on your system and, if necessary, enable the kernel modules you'll need to use your devices. Ready to go?
+
+When identifying directory trees, we use the forward slash. Thus, the absolute address of, say, a directory called scripts in my home directory would be /home/ubuntu/scripts - where ubuntu is the name of my account. If I would preface that tree with cd - which stands for change directory - I would move to that directory.
+
+Let's prove that. I'll type pwd - which stands for present work directory, and we'll see our new current directory location displayed.
+
+To make it easier to understand the basic Linux file and directory management commands, let's create a new directory and populate it with some fairly useless stuff. mkdir will, as you could probably guess all by yourself, make a directory called data, list the contents of the parent directory to show the new sub directory, and then change location to that directory.
+
+So far, of course, there's nothing here, but why don't we create a few files. We could launch the text editor, nano, followed by the name of either an existing or new file - in this case, of course, it will be new.
+
+We can enter some text, and then type CTRL+x and then y to save and exit. file1 now exists. A quick way to create *empty* files with unused names is through touch. Using touch on an existing file, by the way, will simply update the date/time stamp of the file, which can be useful for some administrative purposes. I'll hit the up arrow and raise the number a few times to make it easier to create a few more files. We've now got a series of mostly empty numbered files. Not all that exciting.
+
+Let's create a new directory within data and call it newdata. If we'd want to copy files to newdata, we can use cp. This will create a copy of the file1 file. But it would be boring to have to repeat that command for each of the files in our series, so we'll use what's called globbing. While globbing might sound like the result of some radioactivity experiment from the 1950's that went horribly wrong, it's actually just a way of spreading an action across a global target. So typing cp file* newdata will copy all files that begin with file, no matter what characters follow that string.
+
+Let's cd to newdata to see what's there. The asterisk will cause a Linux command to act on any string starting with "file" no matter how many characters follow. However, you can also limit the action to a single character using the question mark. Let's create a couple more files with longer names.
+
+Now let's use rm with a question mark to delete (or remove) all files starting with file but having only a single digit extra. You can see that file11 and file12 are still there. If we were to use rm file with an asterisk, those two files would be removed as well.
+
+The newdata directory seems kind of lonely now that everything is gone. Why not move our original files from the parent data directory here? To move a file - rather than just make a new copy - we use mv. Let's move all the "file" files from data to newdata. Notice how we used two dots to point to the directory above us, file and an asterisk to cover all files beginning with the string "file", and a single dot to tell Linux that the target directory is the one we're currently in. 
+
+Now it's time to clean up our toys. I'll use rm and an asterisk to remove all the files in our newdata directory. Be careful with this, by the way, because you can sometimes end up deleting a lot more than you expected and, you should definitely keep in mind, the Linux terminal has no trash can from which deleted files can be restored. Now we'll cd back up to data and run rmdir to remove the newdata directory.
+
+[new clip2: Searching the Linux File System]
+
+A busy Linux system can contain a lot of files. How much is a lot? Well, my workstation has more than 1.2 million of 'em. Tracking down individual system and configuration files is going to be important from time to time. But visually scanning for them one directory at a time can be unbelievably tedious. The quickest and easiest way to find files is using locate. Suppose you couldn't remember where they've hidden the configuration file controlling the way the adduser command works. You could simply run locate using adduser as the parameter. The most likely candidate from that list is the one in the /etc directory - which happens to be where most configuration files are kept. You can then open the file in a text editor by pointing to its address.
+
+Locate works so quickly because it simply reads a pre-compiled index of all the files and directories on the system. If you're looking for files that may have been added quite recently, you might need to update the index. You do that by running updatedb:
+
+That'll get you going when you need to find a file. But since pretty much all the action in Linux is controlled through file *contents*, you'll need a way to search *inside* those files. As an example, many programs will regularly generate thousands or even millions of text messages that are written to log files so that, later, you can revisit critical events. To manage the problem of working with all this data, Bash comes with a full set of text manipulation tools for reading, transforming, and redirecting text. 
+
+We've already seen how "less" reads a file and displays it one screen at a time. Rather than printing the text directly to the screen, however, you can also search and, if desired, manipulate the contents of a file by sending it through what's called a pipe. Multiple text manipulation tools can then be invoked to filter the streaming text. 
+
+Here's a simple example. We'll use cat to read the group file that contains information about system groups and that lives in the /etc/ directory. But rather than just dump its contents to the screen, we'll pipe it to the grep filtering program - using the vertical line produced by shift and backslash. We'll tell grep to read through the text and print only those lines that contain the word ubuntu.
+
+If we needed to, rather than printing the output to the screen, we could use it to populate a file. We do this by adding a redirect with a couple of right arrows and the name of a file.
+
+Notice how nothing was displayed on the screen, but that it's now permanently included in the newfile file. By the way, that newfile file was created as part of the process, but I could just have easily used an existing file. The only thing is, that if I would have used only one right arrow for that redirect rather than two, the text selected by grep would have *overwritten* any existing contents of the file. Two arrows will append the text to end of the file. That's an important distinction that you should keep in mind.
+
+Since group is a rather long file, this is a good way to illustrate how we can use some more tools. head, by default, will print only the first ten lines of a file, and tail will print the last ten lines.
+
+Of course, the real value of a file like group is in the data in contains. You can see that each line follows a similar pattern: first a group name, then a colon and an x; another colon and the group ID number. It might be useful to be able to pull out one field of data from each line and process them all together. For that, we'll use cut.
+
+-d tells Linux to use every colon as a field delimiter - meaning, to consider every appearance of a colon as the end of one field and the beginning of another. -f3 is our way of saying that we're only interested in processing the contents of the third field of each line. As you can see, this successfully printed only the ID number of each group. Good enough? Not yet. Deep, deep down, I'll bet that you'd love to see these numbers printed in ascending order. No problem at all. We'll pipe our output to sort -n. And there you go! If you're a descending order kind of person, just add a r (for reverse) to the sort arguments.
+
+Ok. While I have to admit that this example was pretty silly, I still feel that there's a certain beauty to squeezing so much function into a single, short line of code. Nevertheless, I'm confident that you can see how each of these tools can be really useful when you've got a pressing need to quickly analyze a large text file - like a system log - and you just don't have the time to read through it line by line.
+
+One more tool. If you'd like to see how many lines, words, and characters a file contains, run wc (which stands for word count).
+
+Since I mentioned redirects using arrows just a minute ago, I might as well finish the job. The word *re*direct implies that we're handling the text differently than it would otherwise have been managed. How would that normally have gone? Well that depends on what kind of text it was. You've got three to choose from: standard input, often referred to as stdin; standard output or stdout; and stderr for standard error. 
+
+Standard in is normally coming *from* the keyboard through which it's made available to Bash. An standard in redirect would accept input from an alternate source. This example will open the MySQL database engine as the root user and import the mydatabase.sql database file using the left arrow character to tell Bash where to find the file.
+
+Standard out will, by default, be sent to the terminal display. Redirecting stdout to a file - as you saw a bit earlier - would work like this. Remember: one right arrow will erase any existing text in the file and replace it with the input and two arrows will append the new text.
+
+Finally, standard error will write any errors generated by a command. By default those errors will also go to the terminal display. I'll run wget against an incorrect web address for Pluralsight.com with two m's to illustrate how that would normally work. You can see that wget failed to resolve the address. Hardly a surprise, considering that there is no such address. However, if I'd like the error message written to a file, I'd use wget, the incorrect address, the number two, a single right arrow, and the name of the file I'd like to create. The number two is a designation for standard error. 0 is standard in, and 1 is standard out.
+
+[new clip3: Working with Archives]
+
+We've seen Linux files and directories in their natural habitats, but you'll probably also eventually need to transport lots of data between locations. 
+
+Now, leaving hundreds or thousands of files in their raw state while moving them to a backup drive or to restore a failed filesystem can be unnecessarily messy and time consuming. Just in the interest of convenience, you'll at least want to combine them into a single archive. But from my own experience backing up and moving even relatively small file systems, I can tell you that adding reliable compression to your process can really speed things up. 
+
+On Linux, the most common tool for archiving and compressing is tar, which once upon a time stood for Tape Archive. Tape archives might have largely disappeared, but tar is just as useful as ever. You might remember how, in the previous module, we used wget to download the latest version of WordPress. You might have noticed that the filename ended with a double extension: .tar and .gz. 
+
+tar tells us that this file is actually a tar archive, and gz tells us that it's also compressed using the gzip algorithm. Most Linux and Unix packages are packed using those two tools, although there are other compression algorithms available. To unpack the archive, we run tar with x, z, and f as arguments, and then the name of the archive itself. X means that we want tar to extract the files from the archive, z tells tar that it's compressed, or zipped, and f - which stands for file - means that the filename will follow immediately.
+
+Taking another look shows us that a new directory named wordpress has been created. Looking inside displays newly extracted files and subdirectories in the exact same format they had when archived in the first place. I'll run cd with two dots to move back to the parent directory. If we'd like to repack the files - or any other set of files and directories - we perform the process in reverse. Here, though, instead of x for extract, we use c for create. The name of the archive we want to create should follow the f (which stands for file), and the files we want to include in archive - the wordpress directory, in this case - should come last.
+
+Running ls -l shows us our new archive, but it also tells us that the file size is a little different from the original. I'm not sure exactly why that is, although it could be because I used a different version of tar. In any case, it underlines an important principle of working with backups and packages: you should always test your archives to make sure your data hasn't been corrupted. An old boss with decades of admin experience once told me that a very high percentage of backup archives are actually badly built and corrupted - but that you usually won't find out until you're desperately working to restore a crashed server...at which point, of course, it's far too late to do anything about it.
+
+If you accidentally forgot to add the z argument when you created your archive, all is not lost: you can still compress the file directly using gzip. We'll illustrate that by creating a simple tar file without the z. Then we'll run gzip using only the file name as an argument:
+
+You can also use bzip2 in exactly the same ways as gzip, but the compression will use the Burrows-Wheeler transform compression algorithm. 
+
+Sometimes archives come in different flavors. Many WordPress themes and plugins, for instance, will be zipped files. It stands to reason that we should be able to handle such files with a program called unzip. And so it is. We'll download the Akismet plugin using wget and then unzip it with unzip. As you can see, unzip created a new directory called akismet where the plugin resources are kept. I'll type ls and a, and then use tab complete to handle the rest. In case you're curious, you would normally only unpack a WordPress plugin in the WordPress plugin directory - not wherever you happened to download it the way I did here. 
+
+You can create a new zip archive using the zip command. This example will archive and compress all the contents of the current directory into a single file called newname.zip:
+
+[new clip4: Linux Kernel Modules and Peripherals]
+
+With all this talk about finding files and working with their data, we shouldn't lose sight of the fact that your computer's hardware is also an important part of the mix. At some point in the course of a long, full career, a sysadmin is probably going to be called to fix someone's non-functioning webcam or speakers, so spending a couple of minutes learning a little about how Linux works with hardware peripherals will be time well spent.
+
+You probably already know that the Linux desktop GUI includes tools for setting up and troubleshooting devices - like the Settings dialog on this Ubuntu machine. But we're going to ignore all that here and focus entirely on command line resources - which are what the GUI uses behind the scenes in any case.
+
+When troubleshooting problems with your peripherals, there are two main steps. You'll first want to confirm that the system at least recognizes your device. Then, even if it's there, you'll need to make sure there's an appropriate kernel module loaded that'll let Linux talk to the device and expose it to your users.
+
+So then, using the command line, just how do you figure out what devices Linux sees? Well, for USB devices, whatever is plugged into a Linux computer should show up in the results of the lsusb command. You can see my Brother printer, Logitech keyboard, and Blue Yeti microphone are all include in this list. lspci will show you the devices connected through PCI slots. The output here doesn't look great, but you can at least see my network interface card. lshw will give you the whole hardware range in one output. Since there's a lot of hardware that goes into making a computer, that output will fill up a lot of screens, so you might want to redirect it to a text file you can read at your leisure. 
+
+Those tools should give you a sense of what's there. But what if a particular device isn't accessible to users? It's possible that there's a Linux kernel module available that hasn't been loaded. In theory, it's possible to write your own module for a device, but the odds are that one already exists. In fact, the odds are that the module is already installed on your system and just needs to be woken up. Working with kernel modules is, obviously, a huge topic. But I'll give you enough information here to leave you with an idea of how it works. 
+
+The software files that make up kernel modules are usually kept in the /lib/modules directory. The thing is, though, that the module you'll want to use will depend on the Linux kernel version you're running. 
+as you can see, the modules directory contains subdirectories named for each of the kernel versions you could currently launch from the GRUB bootloader at boot time. Which is the one you're running right now? You can get that information by running uname -r. 
+
+Now, through the magic of command substitution - the dark art of inserting the results of one command into the operation of another - you can easily insert that value into a command using uname -r enclosed by tilde characters. 
+
+I'll drop down into the kernel directory and look around. If it was an audio problem I was trying to solve, it would make sense to take a peek in the sound directory. A module will normally have a .ko extension, so that soundcore.ko file looks promising. I'll show you how you'd load that module in just a moment, but first let's use lsmod to list all the modules we've currently got loaded. I'll use grep to filter for just modules using the string "sound". It looks like our soundcore module is, in fact, already loaded. But if we did need to load it, we'd use the modprobe command, followed by the module name.
+
+That's it. As I said, we've only scratched the surface of the topic, but it should be enough to point you in the right direction when you get that urgent, middle of the night call.
+
+Before we move on, let's review what we've seen. We learned the basic file system navigation and administration commands, including how to display your present work directory, create a new directory, and edit, and create new files. We saw how the locate command uses an index to quickly search through hundreds of thousands of files, and how tools like grep, cut, and wc can be used to precisely parse text streams. We also learned about redirecting standard streams as a way to better manage text.
+
+You discovered how to work with the tar program to create, compress, and extract file system archives of all sizes and comprising any number of files. And finally, you saw how to confirm that Linux is aware of your peripherals, and how to make the functionality of those devices available to your users.
+ 
+Coming up next: Linux network connectivity.
