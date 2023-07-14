@@ -1,0 +1,76 @@
+Europe	Albania	Tirana
+Africa	Algeria	Algiers
+
+Africa	Angola	Luanda
+
+
+South America	Argentina	Buenos Aires
+
+Australia	Australia	Canberra
+Europe	Austria	Vienna
+Europe	Azerbaijan	Baku
+North America	Bahamas	Nassau
+Asia	Bahrain	Manama
+Asia	Bangladesh	Dhaka
+Central America	Barbados	Bridgetown
+Europe	Belarus	Minsk
+Europe	Belgium	Brussels
+Central America	Belize	Belmopan
+
+North America	Bermuda	Hamilton
+Asia	Bhutan	Thimphu
+South America	Bolivia	La Paz
+Europe	Bosnia and Herzegovina	Sarajevo
+
+South America	Brazil	Brasilia
+
+Europe	Bulgaria	Sofia
+Africa	Burkina Faso	Ouagadougou
+
+Asia	Cambodia	Phnom Penh
+
+North America	Canada	Ottawa
+South America	Chile	Santiago
+Asia	China	Beijing
+South America	Colombia	Bogota
+Europe	Czech Republic	Prague
+
+Africa	Egypt	Cairo
+
+Africa	Ethiopia	Addis Ababa
+Europe	Finland	Helsinki
+Europe	France	Paris
+
+Europe	Germany	Berlin
+Africa	Ghana	Accra
+
+Europe	Greece	Athens
+Central America	Guatemala	Guatemala City
+
+
+North America	Haiti	Port-au-Prince
+
+
+
+Central America	Honduras	Tegucigalpa
+
+Europe	Hungary	Budapest
+Europe	Iceland	Reykjavik
+Asia	India	New Delhi
+Asia	Indonesia	Jakarta
+Asia	Iran	Tehran
+Asia	Iraq	Baghdad
+Europe	Ireland	Dublin
+
+
+Europe	Italy	Rome
+North America	Jamaica	Kingston
+Asia	Japan	Tokyo
+
+
+Asia	Jordan	Amman
+Asia	Kazakhstan	Nur-Sultan
+Africa	Kenya	Nairobi
+
+Europe	Latvia	Riga
+Asia	Lebanon	Beirut

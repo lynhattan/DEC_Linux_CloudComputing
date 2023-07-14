@@ -1,0 +1,18 @@
+Important Links for Learning Environment Setup:
+===============================================
+VirtualBox:
+-----------
+Download Oracle VirtualBox: https://www.virtualbox.org/wiki/Downloads
+
+Linux Distro Download:
+----------------------
+1. CentOS: https://www.osboxes.org/centos/
+2. Ubuntu: https://www.osboxes.org/ubuntu/
+
+Installing Z-shell:
+-------------------
+1. https://casparwre.de/blog/zsh-in-ubuntu/
+2. https://medium.com/@simonconnah/installing-zsh-on-ubuntu-16-04-lts-46fbadec28e2
+3. https://www.vultr.com/docs/boost-productivity-with-z-and-zsh-on-ubuntu
+4. https://dev.to/mskian/install-z-shell-oh-my-zsh-on-ubuntu-1804-lts-4cm4
+
